@@ -1,0 +1,1095 @@
+<<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quién Quiere Ser Millonario? - Edición Colombia</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter y Orbitron -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        millGold: '#FFD700',
+                        millOrange: '#FFA500',
+                        millDarkBlue: '#0A0A26',
+                        millBlue: '#131942',
+                        millBrightBlue: '#1D2A68',
+                        millPurple: '#29104A',
+                        millGreen: '#10B981',
+                        millRed: '#EF4444'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        tech: ['Orbitron', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Glowing & Hexagonal Styles */
+        body {
+            background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Hexagonal option buttons */
+        .option-btn {
+            position: relative;
+            background: linear-gradient(180deg, #1d2a68 0%, #0d1233 100%);
+            border: 2px solid #3b82f6;
+            clip-path: polygon(15px 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0% 50%);
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            transform: scale(1.01);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(180deg, #d97706 0%, #b45309 100%) !important;
+            border-color: #ffffff !important;
+            animation: pulse-orange 0.8s infinite alternate;
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(180deg, #059669 0%, #047857 100%) !important;
+            border-color: #10b981 !important;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.8) !important;
+            animation: pulse-green 0.6s infinite alternate;
+        }
+
+        .option-btn.wrong {
+            background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%) !important;
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.8) !important;
+            animation: blink-red 0.4s infinite;
+        }
+
+        .option-btn.eliminated {
+            opacity: 0.2;
+            pointer-events: none;
+            border-color: #4b5563;
+        }
+
+        /* Question Box Frame */
+        .question-box {
+            background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+            border: 2px solid #6366f1;
+            clip-path: polygon(20px 0%, calc(100% - 20px) 0%, 100% 50%, calc(100% - 20px) 100%, 20px 100%, 0% 50%);
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Ladder Item Styles */
+        .ladder-item {
+            position: relative;
+            clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%);
+            transition: all 0.3s;
+        }
+
+        .ladder-item.active {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+            color: #000;
+            font-weight: 800;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+        }
+
+        .ladder-item.passed {
+            color: #10b981;
+            opacity: 0.7;
+        }
+
+        .ladder-item.safe-haven {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* Keyframe Animations */
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 5px #f59e0b; }
+            100% { box-shadow: 0 0 20px #f59e0b; }
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 10px #10b981; }
+            100% { box-shadow: 0 0 30px #10b981; }
+        }
+
+        @keyframes blink-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Glowing text effects */
+        .glow-gold {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .glow-blue {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.7), 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Custom Scrollbar for sidebar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #312e81;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between select-none relative overflow-x-hidden">
+
+    <!-- Top Navigation Bar -->
+    <header class="w-full bg-slate-900/80 backdrop-blur border-b border-indigo-900/50 px-4 py-3 flex justify-between items-center z-20">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-500 to-amber-300 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg border-2 border-yellow-200">
+                $
+            </div>
+            <div>
+                <h1 class="text-lg md:text-xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-200 uppercase font-tech">
+                    ¿Quién Quiere Ser Millonario?
+                </h1>
+                <p class="text-xs text-indigo-300 font-semibold tracking-wide">EDICIÓN COLOMBIA COP</p>
+            </div>
+        </div>
+
+        <!-- Mute/Sound Toggle & Mobile Sidebar Toggle -->
+        <div class="flex items-center gap-3">
+            <button id="soundToggleBtn" onclick="toggleSound()" class="p-2.5 rounded-full bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/50 text-yellow-400 transition hover:scale-105" title="Sonido">
+                <i id="soundIcon" class="fas fa-volume-up text-lg"></i>
+            </button>
+            <button onclick="toggleMobileLadder()" class="lg:hidden p-2.5 rounded-full bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/50 text-amber-400 transition">
+                <i class="fas fa-list-ol text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-2 sm:p-4 md:p-6 z-10">
+
+        <!-- ==================== PANTALLA 1: START SCREEN ==================== -->
+        <section id="startScreen" class="w-full max-w-2xl text-center space-y-8 bg-slate-900/90 border-2 border-indigo-600/40 p-6 md:p-10 rounded-3xl shadow-2xl backdrop-blur-md relative overflow-hidden my-auto">
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl"></div>
+
+            <div class="relative z-10 space-y-4">
+                <div class="inline-block p-4 rounded-full bg-gradient-to-br from-indigo-900 to-purple-950 border-2 border-amber-400/50 shadow-2xl mb-2">
+                    <i class="fas fa-trophy text-5xl md:text-6xl text-amber-400 animate-bounce"></i>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black font-tech text-white tracking-tight glow-gold">
+                    ¿QUIÉN QUIERE SER <span class="text-amber-400">MILLONARIO?</span>
+                </h2>
+                <p class="text-indigo-200 text-sm md:text-base max-w-lg mx-auto">
+                    Demuestra tu conocimiento general y cultura colombiana. Responde 20 preguntas sin equivocarte y alcanza el premio acumulado de <strong class="text-amber-400 font-bold">$1.000.000.000 COP</strong>.
+                </p>
+            </div>
+
+            <!-- Features Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-left text-xs text-indigo-200 bg-slate-950/60 p-4 rounded-2xl border border-indigo-800/40">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-shield-alt text-emerald-400 text-lg"></i>
+                    <span>Seguros en Pregs. 5 ($100 mil) y 10 ($3 Millones)</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-clock text-amber-400 text-lg"></i>
+                    <span>Tiempo límite dinámico por dificultad</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-hand-holding-usd text-yellow-400 text-lg"></i>
+                    <span>Comodines 50/50, Amigo y Público</span>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-black text-lg md:text-xl rounded-full shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-105 active:scale-95 transition-all font-tech tracking-wider border-2 border-yellow-200">
+                <i class="fas fa-play mr-2"></i> INICIAR JUEGO
+            </button>
+        </section>
+
+
+        <!-- ==================== PANTALLA 2: GAME SCREEN ==================== -->
+        <section id="gameScreen" class="hidden w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Left Area: Main Question & Options Area -->
+            <div class="lg:col-span-8 flex flex-col justify-between space-y-6">
+
+                <!-- Top Control Status Bar -->
+                <div class="flex justify-between items-center bg-slate-900/80 p-3 md:p-4 rounded-2xl border border-indigo-800/50 backdrop-blur">
+                    <!-- Current Prize Badge -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-indigo-300 font-semibold uppercase">Premio Actual:</span>
+                        <span id="currentPrizeText" class="text-base md:text-xl font-extrabold text-amber-400 font-tech glow-gold">$0 COP</span>
+                    </div>
+
+                    <!-- Timer Bar/Circle -->
+                    <div class="flex items-center gap-3 bg-slate-950 px-4 py-1.5 rounded-full border border-indigo-700/60">
+                        <i class="fas fa-stopwatch text-amber-400 animate-pulse"></i>
+                        <span id="timerText" class="text-xl md:text-2xl font-black font-tech text-white">45</span>
+                        <span class="text-xs text-slate-400">seg</span>
+                    </div>
+
+                    <!-- Retire / Walk Away Button -->
+                    <button onclick="walkAway()" class="px-3 py-1.5 bg-red-900/50 hover:bg-red-800 text-red-200 text-xs md:text-sm font-bold rounded-xl border border-red-600/50 transition flex items-center gap-2">
+                        <i class="fas fa-door-open"></i>
+                        <span class="hidden sm:inline">Retirarse</span>
+                    </button>
+                </div>
+
+                <!-- Lifelines Bar -->
+                <div class="bg-slate-900/70 p-3 rounded-2xl border border-indigo-900/50 flex justify-center items-center gap-4 sm:gap-8">
+                    <!-- Lifeline 1: 50/50 -->
+                    <button id="lifeline5050" onclick="use5050()" class="group flex flex-col items-center gap-1">
+                        <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-indigo-800 to-slate-900 border-2 border-indigo-400 flex items-center justify-center text-amber-400 text-base md:text-lg font-black shadow-lg group-hover:scale-110 group-hover:border-amber-400 transition">
+                            50:50
+                        </div>
+                        <span class="text-[10px] text-indigo-200 font-bold uppercase tracking-wider">50 / 50</span>
+                    </button>
+
+                    <!-- Lifeline 2: Phone Friend -->
+                    <button id="lifelineFriend" onclick="usePhoneFriend()" class="group flex flex-col items-center gap-1">
+                        <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-indigo-800 to-slate-900 border-2 border-indigo-400 flex items-center justify-center text-amber-400 text-base md:text-lg font-black shadow-lg group-hover:scale-110 group-hover:border-amber-400 transition">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <span class="text-[10px] text-indigo-200 font-bold uppercase tracking-wider">Llamar</span>
+                    </button>
+
+                    <!-- Lifeline 3: Ask Audience -->
+                    <button id="lifelineAudience" onclick="useAudience()" class="group flex flex-col items-center gap-1">
+                        <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-indigo-800 to-slate-900 border-2 border-indigo-400 flex items-center justify-center text-amber-400 text-base md:text-lg font-black shadow-lg group-hover:scale-110 group-hover:border-amber-400 transition">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <span class="text-[10px] text-indigo-200 font-bold uppercase tracking-wider">Público</span>
+                    </button>
+                </div>
+
+                <!-- Question Container -->
+                <div class="question-box p-6 md:p-8 text-center min-h-[140px] flex flex-col justify-center items-center relative">
+                    <div id="questionCategory" class="text-xs uppercase tracking-widest font-extrabold text-indigo-400 mb-2">
+                        CATEGORÍA: CULTURA GENERAL
+                    </div>
+                    <h3 id="questionText" class="text-lg md:text-2xl font-bold text-white leading-relaxed">
+                        Cargando pregunta...
+                    </h3>
+                </div>
+
+                <!-- Answer Options (2x2 Grid) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 pt-2">
+                    <!-- Option A -->
+                    <button id="opt0" onclick="selectOption(0)" class="option-btn py-4 px-6 text-left flex items-center gap-3">
+                        <span class="text-amber-400 font-black font-tech text-lg min-w-[24px]">A:</span>
+                        <span id="optText0" class="text-sm md:text-base font-semibold text-slate-100 flex-grow">--</span>
+                    </button>
+
+                    <!-- Option B -->
+                    <button id="opt1" onclick="selectOption(1)" class="option-btn py-4 px-6 text-left flex items-center gap-3">
+                        <span class="text-amber-400 font-black font-tech text-lg min-w-[24px]">B:</span>
+                        <span id="optText1" class="text-sm md:text-base font-semibold text-slate-100 flex-grow">--</span>
+                    </button>
+
+                    <!-- Option C -->
+                    <button id="opt2" onclick="selectOption(2)" class="option-btn py-4 px-6 text-left flex items-center gap-3">
+                        <span class="text-amber-400 font-black font-tech text-lg min-w-[24px]">C:</span>
+                        <span id="optText2" class="text-sm md:text-base font-semibold text-slate-100 flex-grow">--</span>
+                    </button>
+
+                    <!-- Option D -->
+                    <button id="opt3" onclick="selectOption(3)" class="option-btn py-4 px-6 text-left flex items-center gap-3">
+                        <span class="text-amber-400 font-black font-tech text-lg min-w-[24px]">D:</span>
+                        <span id="optText3" class="text-sm md:text-base font-semibold text-slate-100 flex-grow">--</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Area: Prize Ladder / Escalera (Desktop) -->
+            <div id="prizeLadderContainer" class="hidden lg:block lg:col-span-4 bg-slate-900/90 border border-indigo-800/60 p-4 rounded-3xl backdrop-blur shadow-xl">
+                <h3 class="text-center font-tech font-extrabold text-amber-400 text-sm tracking-widest uppercase mb-3 border-b border-indigo-900 pb-2">
+                    Escalera de Premios (COP)
+                </h3>
+                <div id="prizeLadderList" class="flex flex-col-reverse gap-1 text-xs">
+                    <!-- Rendered via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== PANTALLA 3: GAME OVER / LOSS SCREEN ==================== -->
+        <section id="gameOverScreen" class="hidden w-full max-w-lg text-center space-y-6 bg-slate-900/95 border-2 border-red-600/50 p-6 md:p-8 rounded-3xl shadow-2xl backdrop-blur-md my-auto">
+            <div class="inline-block p-4 rounded-full bg-red-950/80 border-2 border-red-500/50 text-red-500 text-5xl mb-2">
+                <i class="fas fa-times-circle"></i>
+            </div>
+
+            <h2 class="text-3xl font-black font-tech text-red-500 uppercase tracking-wide">
+                ¡Juego Terminado!
+            </h2>
+
+            <p id="gameOverReason" class="text-indigo-200 text-sm">
+                Respuesta incorrecta o el tiempo se agotó.
+            </p>
+
+            <!-- Details box -->
+            <div class="bg-slate-950/80 p-4 rounded-2xl border border-indigo-900/80 text-left space-y-2 text-xs md:text-sm">
+                <div class="flex justify-between border-b border-slate-800 pb-1.5">
+                    <span class="text-slate-400">Preguntas alcanzadas:</span>
+                    <span id="lossQuestionNum" class="font-bold text-white">0 / 20</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-800 pb-1.5">
+                    <span class="text-slate-400">Respuesta Correcta:</span>
+                    <span id="lossCorrectAnswer" class="font-bold text-emerald-400">---</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">Premio Ganado (Asegurado):</span>
+                    <span id="lossGuaranteedPrize" class="font-black text-amber-400 font-tech">$0 COP</span>
+                </div>
+            </div>
+
+            <button onclick="resetGame()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-base rounded-full shadow-lg hover:scale-105 active:scale-95 transition font-tech">
+                <i class="fas fa-redo mr-2"></i> INTENTAR DE NUEVO
+            </button>
+        </section>
+
+
+        <!-- ==================== PANTALLA 4: VICTORY / WINNER SCREEN ==================== -->
+        <section id="victoryScreen" class="hidden w-full max-w-xl text-center space-y-6 bg-slate-900/95 border-2 border-amber-400/60 p-6 md:p-10 rounded-3xl shadow-2xl backdrop-blur-md relative z-30 my-auto">
+            <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none rounded-3xl"></canvas>
+            
+            <div class="inline-block p-5 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950 text-5xl mb-2 shadow-2xl animate-bounce">
+                <i class="fas fa-crown"></i>
+            </div>
+
+            <h2 class="text-3xl md:text-5xl font-black font-tech text-amber-400 tracking-tight glow-gold">
+                ¡ERES MILLONARIO!
+            </h2>
+
+            <p class="text-indigo-200 text-sm md:text-base">
+                ¡Has demostrado un conocimiento supremo completando las 20 preguntas del concurso!
+            </p>
+
+            <div class="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 p-6 rounded-2xl border-2 border-amber-400/50 shadow-inner">
+                <span class="text-xs uppercase tracking-widest text-indigo-300 font-extrabold block mb-1">Premio Mayor Ganado</span>
+                <span class="text-3xl md:text-4xl font-black font-tech text-amber-300 glow-gold">$1.000.000.000 COP</span>
+            </div>
+
+            <button onclick="resetGame()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-black text-lg rounded-full shadow-xl hover:scale-105 active:scale-95 transition font-tech">
+                <i class="fas fa-trophy mr-2"></i> JUGAR OTRA VEZ
+            </button>
+        </section>
+    </main>
+
+    <!-- MODAL 1: Phone Friend Lifeline Modal -->
+    <div id="friendModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border-2 border-indigo-500 p-6 rounded-3xl max-w-md w-full space-y-4 shadow-2xl relative text-center">
+            <div class="w-16 h-16 rounded-full bg-indigo-800 border-2 border-amber-400 flex items-center justify-center text-amber-400 text-2xl mx-auto">
+                <i class="fas fa-user-astronaut"></i>
+            </div>
+            <h3 class="text-xl font-black text-amber-400 font-tech">Llamada a un Amigo</h3>
+            <p id="friendDialogText" class="text-indigo-100 text-sm italic bg-slate-950 p-4 rounded-xl border border-indigo-900/60 leading-relaxed">
+                "Hola... dame un segundo para pensar..."
+            </p>
+            <button onclick="closeFriendModal()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-white transition text-sm">
+                Entendido, Gracias
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Ask Audience Lifeline Modal -->
+    <div id="audienceModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border-2 border-indigo-500 p-6 rounded-3xl max-w-md w-full space-y-4 shadow-2xl relative text-center">
+            <div class="w-16 h-16 rounded-full bg-indigo-800 border-2 border-amber-400 flex items-center justify-center text-amber-400 text-2xl mx-auto">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3 class="text-xl font-black text-amber-400 font-tech">Resultados del Público</h3>
+            
+            <!-- Bars Chart -->
+            <div class="flex justify-around items-end h-44 bg-slate-950 p-4 rounded-xl border border-indigo-900/60 pt-6">
+                <div class="flex flex-col items-center gap-1 w-12">
+                    <span id="audVal0" class="text-xs font-bold text-amber-400">0%</span>
+                    <div id="audBar0" class="w-full bg-indigo-600 rounded-t-md transition-all duration-700" style="height: 0%"></div>
+                    <span class="text-xs font-bold text-slate-300">A</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 w-12">
+                    <span id="audVal1" class="text-xs font-bold text-amber-400">0%</span>
+                    <div id="audBar1" class="w-full bg-indigo-600 rounded-t-md transition-all duration-700" style="height: 0%"></div>
+                    <span class="text-xs font-bold text-slate-300">B</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 w-12">
+                    <span id="audVal2" class="text-xs font-bold text-amber-400">0%</span>
+                    <div id="audBar2" class="w-full bg-indigo-600 rounded-t-md transition-all duration-700" style="height: 0%"></div>
+                    <span class="text-xs font-bold text-slate-300">C</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 w-12">
+                    <span id="audVal3" class="text-xs font-bold text-amber-400">0%</span>
+                    <div id="audBar3" class="w-full bg-indigo-600 rounded-t-md transition-all duration-700" style="height: 0%"></div>
+                    <span class="text-xs font-bold text-slate-300">D</span>
+                </div>
+            </div>
+
+            <button onclick="closeAudienceModal()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-white transition text-sm">
+                Cerrar Gráfica
+            </button>
+        </div>
+    </div>
+
+    <!-- MOBILE DRAWER: Prize Ladder for Small Screens -->
+    <div id="mobileLadderDrawer" class="fixed inset-y-0 right-0 w-72 bg-slate-900/95 border-l border-indigo-700 z-50 p-4 transform translate-x-full transition-transform duration-300 flex flex-col justify-between shadow-2xl lg:hidden">
+        <div>
+            <div class="flex justify-between items-center mb-4 border-b border-indigo-800 pb-2">
+                <h3 class="font-tech font-bold text-amber-400 text-sm uppercase">Escalera de Premios</h3>
+                <button onclick="toggleMobileLadder()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            <div id="mobilePrizeLadderList" class="flex flex-col-reverse gap-1 text-xs">
+                <!-- Rendered via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-2 text-[11px] text-indigo-300/60 z-10">
+        ¿Quién quiere ser millonario? © Edición Colombia COP
+    </footer>
+
+    <script>
+        /* ==================== 1. PREMIOS Y ESCALERA COP ==================== */
+        const PRIZE_LADDER = [
+            { level: 1, amount: 10000, formatted: "$10.000", safe: false },
+            { level: 2, amount: 20000, formatted: "$20.000", safe: false },
+            { level: 3, amount: 30000, formatted: "$30.000", safe: false },
+            { level: 4, amount: 50000, formatted: "$50.000", safe: false },
+            { level: 5, amount: 100000, formatted: "$100.000", safe: true }, // Seguro 1
+            { level: 6, amount: 200000, formatted: "$200.000", safe: false },
+            { level: 7, amount: 400000, formatted: "$400.000", safe: false },
+            { level: 8, amount: 800000, formatted: "$800.000", safe: false },
+            { level: 9, amount: 1500000, formatted: "$1.500.000", safe: false },
+            { level: 10, amount: 3000000, formatted: "$3.000.000", safe: true }, // Seguro 2
+            { level: 11, amount: 7000000, formatted: "$7.000.000", safe: false },
+            { level: 12, amount: 15000000, formatted: "$15.000.000", safe: false },
+            { level: 13, amount: 30000000, formatted: "$30.000.000", safe: false },
+            { level: 14, amount: 60000000, formatted: "$60.000.000", safe: false },
+            { level: 15, amount: 100000000, formatted: "$100.000.000", safe: false },
+            { level: 16, amount: 200000000, formatted: "$200.000.000", safe: false },
+            { level: 17, amount: 350000000, formatted: "$350.000.000", safe: false },
+            { level: 18, amount: 500000000, formatted: "$500.000.000", safe: false },
+            { level: 19, amount: 750000000, formatted: "$750.000.000", safe: false },
+            { level: 20, amount: 1000000000, formatted: "$1.000.000.000", safe: false }
+        ];
+
+        /* ==================== 2. BANCO DE 20 PREGUNTAS GRADUADAS ==================== */
+        const QUESTIONS = [
+            // Nivel 1 - 5 (Muy Fácil - Fácil)
+            {
+                category: "COLOMBIA",
+                question: "¿Cuál es la capital de la República de Colombia?",
+                options: ["Medellín", "Cali", "Bogotá D.C.", "Barranquilla"],
+                answer: 2
+            },
+            {
+                category: "GEOGRAFÍA",
+                question: "¿En qué continente se encuentra ubicado el país de Italia?",
+                options: ["Europa", "América", "Asia", "África"],
+                answer: 0
+            },
+            {
+                category: "DEPORTES",
+                question: "¿Cuántos jugadores por equipo juegan simultáneamente en una cancha de fútbol tradicional?",
+                options: ["9 jugadores", "11 jugadores", "10 jugadores", "12 jugadores"],
+                answer: 1
+            },
+            {
+                category: "CIENCIA",
+                question: "¿Cuál es el gas indispensable para la respiración humana?",
+                options: ["Nitrógeno", "Dióxido de Carbono", "Helio", "Oxígeno"],
+                answer: 3
+            },
+            {
+                category: "CULTURA COLOMBIANA",
+                question: "¿A qué famoso escritor colombiano se le otorgó el Premio Nobel de Literatura en 1982?",
+                options: ["Rafael Pombo", "Gabriel García Márquez", "Álvaro Mutis", "Jorge Isaacs"],
+                answer: 1
+            },
+
+            // Nivel 6 - 10 (Fácil - Medio)
+            {
+                category: "HISTORIA",
+                question: "¿En qué año ocurrió la Batalla del Boyacá que consolidó la independencia de Colombia?",
+                options: ["1810", "1819", "1824", "1809"],
+                answer: 1
+            },
+            {
+                category: "ARTE",
+                question: "¿Quién pintó la célebre obra de arte renacentista 'La Gioconda' (La Mona Lisa)?",
+                options: ["Leonardo da Vinci", "Miguel Ángel", "Vincent van Gogh", "Pablo Picasso"],
+                answer: 0
+            },
+            {
+                category: "GEOGRAFÍA",
+                question: "¿Cuál es el río más caudaloso y largo del mundo?",
+                options: ["Río Nilo", "Río Misisipi", "Río Amazonas", "Río Magdalena"],
+                answer: 2
+            },
+            {
+                category: "TECNOLOGÍA",
+                question: "¿Qué significa la sigla 'WWW' en el contexto de las direcciones de Internet?",
+                options: ["World Wide Web", "World Web Wide", "Western Web World", "World Wide Waves"],
+                answer: 0
+            },
+            {
+                category: "COLOMBIA",
+                question: "¿Cuál es el ave nacional de Colombia representada en su escudo patriótico?",
+                options: ["El Águila Arpía", "El Cóndor de los Andes", "El Colibrí Real", "El Guacamayo Bandera"],
+                answer: 1
+            },
+
+            // Nivel 11 - 15 (Medio - Difícil)
+            {
+                category: "LITERATURA",
+                question: "¿Cuál es la obra cumbre de la literatura española escrita por Miguel de Cervantes?",
+                options: ["Cantar de mio Cid", "La Celestina", "Don Quijote de la Mancha", "La Galatea"],
+                answer: 2
+            },
+            {
+                category: "CIENCIA",
+                question: "¿Cuál es el elemento químico más abundante en el universo observable?",
+                options: ["Helio", "Oxígeno", "Carbono", "Hidrógeno"],
+                answer: 3
+            },
+            {
+                category: "HISTORIA",
+                question: "¿En qué año cayó el Imperio Romano de Oriente con la toma de Constantinopla?",
+                options: ["1492", "1453", "1389", "1517"],
+                answer: 1
+            },
+            {
+                category: "GEOGRAFÍA COLOMBIANA",
+                question: "¿Cuál es la altura oficial aproximada del pico más alto de Colombia, el Pico Cristóbal Colón?",
+                options: ["5.775 metros", "4.800 metros", "6.200 metros", "5.300 metros"],
+                answer: 0
+            },
+            {
+                category: "DEPORTES HISTÓRICOS",
+                question: "¿En qué Juegos Olímpicos ganó Colombia su primera medalla de oro en la historia gracias a María Isabel Urrutia?",
+                options: ["Sídney 2000", "Atenas 2004", "Londres 2012", "Atlanta 1996"],
+                answer: 0
+            },
+
+            // Nivel 16 - 20 (SÚPER DIFÍCIL / EXPERTO)
+            {
+                category: "HISTORIA COLOMBIANA",
+                question: "¿Quién asumió la presidencia de la Gran Colombia tras la renuncia de Simón Bolívar en 1830?",
+                options: ["Francisco de Paula Santander", "Domingo Caicedo", "Joaquín Mosquera", "Rafael Urdaneta"],
+                answer: 1
+            },
+            {
+                category: "CIENCIA Y FÍSICA",
+                question: "¿Qué partícula elemental con carga neutra y masa casi nula fue teorizada por Wolfgang Pauli en 1930?",
+                options: ["Bosón de Higgs", "Neutrino", "Quark Top", "Muón"],
+                answer: 1
+            },
+            {
+                category: "LITERATURA MUNDIAL",
+                question: "¿Cuál de los siguientes filósofos y literatos rechazó deliberadamente el Premio Nobel de Literatura en 1964?",
+                options: ["Jean-Paul Sartre", "Albert Camus", "Boris Pasternak", "George Bernard Shaw"],
+                answer: 0
+            },
+            {
+                category: "GEOGRAFÍA EXTREMA",
+                question: "¿Cuál es la fosa marina más profunda del planeta, ubicada en el Océano Pacífico?",
+                options: ["Fosa de las Marianas", "Fosa de Puerto Rico", "Fosa de Java", "Fosa de Tonga"],
+                answer: 0
+            },
+            {
+                category: "HISTORIA Y ARTE SUPREMO",
+                question: "En la mitología romana y astronomía, ¿cuál fue el primer asteroide descubierto históricamente en 1801 por Giuseppe Piazzi?",
+                options: ["Vesta", "Pallas", "Ceres", "Hygiea"],
+                answer: 2
+            }
+        ];
+
+        /* ==================== 3. SOUND SYNTHESIS (WEB AUDIO API) ==================== */
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            if (soundEnabled) {
+                icon.className = 'fas fa-volume-up text-lg';
+            } else {
+                icon.className = 'fas fa-volume-mute text-lg text-red-400';
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } 
+                else if (type === 'tick') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.linearRampToValueAtTime(0.001, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                }
+                else if (type === 'correct') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    notes.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                        gain.gain.setValueAtTime(0.2, now + idx * 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.3);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.1);
+                        osc.stop(now + idx * 0.1 + 0.3);
+                    });
+                }
+                else if (type === 'wrong') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.linearRampToValueAtTime(110, now + 0.5);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.5);
+                }
+                else if (type === 'lifeline') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(900, now + 0.3);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked", e);
+            }
+        }
+
+
+        /* ==================== 4. STATE MANAGEMENT & GAME ENGINE ==================== */
+        let currentQuestionIndex = 0;
+        let timerInterval = null;
+        let timeLeft = 45;
+        let isAnsweringLocked = false;
+
+        // Lifelines state
+        let usedLifelines = {
+            '5050': false,
+            'friend': false,
+            'audience': false
+        };
+
+        // Render Prize Ladder Items in Desktop & Mobile Sidebar
+        function renderPrizeLadders() {
+            const listHtml = PRIZE_LADDER.map(item => {
+                let safeTag = item.safe ? `<span class="text-[9px] bg-indigo-950 text-indigo-300 px-1 rounded border border-indigo-700 ml-1">SEGURO</span>` : '';
+                return `
+                    <div id="ladder-item-${item.level}" class="ladder-item px-3 py-1.5 flex justify-between items-center rounded bg-slate-950/60 border border-slate-800">
+                        <span class="font-bold text-slate-400">#${item.level}</span>
+                        <div class="flex items-center">
+                            <span class="font-tech ${item.safe ? 'text-white font-black' : 'text-amber-400'}">${item.formatted}</span>
+                            ${safeTag}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('prizeLadderList').innerHTML = listHtml;
+            document.getElementById('mobilePrizeLadderList').innerHTML = listHtml;
+        }
+
+        function updateLadderHighlight() {
+            PRIZE_LADDER.forEach(item => {
+                const desktopEl = document.querySelectorAll(`#ladder-item-${item.level}`);
+                desktopEl.forEach(el => {
+                    el.classList.remove('active', 'passed', 'safe-haven');
+                    if (item.level === currentQuestionIndex + 1) {
+                        el.classList.add('active');
+                    } else if (item.level < currentQuestionIndex + 1) {
+                        el.classList.add('passed');
+                    } else if (item.safe) {
+                        el.classList.add('safe-haven');
+                    }
+                });
+            });
+        }
+
+        function getTimerDurationForLevel(level) {
+            if (level <= 5) return 45;
+            if (level <= 10) return 35;
+            if (level <= 15) return 25;
+            return 15; // Preguntas 16-20
+        }
+
+        function startGame() {
+            initAudio();
+            playSound('click');
+            currentQuestionIndex = 0;
+            usedLifelines = { '5050': false, 'friend': false, 'audience': false };
+            
+            // Reset Lifeline buttons
+            ['lifeline5050', 'lifelineFriend', 'lifelineAudience'].forEach(id => {
+                const btn = document.getElementById(id);
+                btn.disabled = false;
+                btn.classList.remove('opacity-30', 'cursor-not-allowed');
+            });
+
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            document.getElementById('victoryScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+
+            renderPrizeLadders();
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnsweringLocked = false;
+            updateLadderHighlight();
+
+            const qData = QUESTIONS[currentQuestionIndex];
+            document.getElementById('questionCategory').innerText = `PREGUNTA ${currentQuestionIndex + 1} DE 20 • ${qData.category}`;
+            document.getElementById('questionText').innerText = qData.question;
+
+            // Reset Options UI
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`opt${i}`);
+                const txt = document.getElementById(`optText${i}`);
+                btn.className = 'option-btn py-4 px-6 text-left flex items-center gap-3';
+                btn.disabled = false;
+                txt.innerText = qData.options[i];
+            }
+
+            // Update Current Money Display
+            const currentMoney = currentQuestionIndex === 0 ? "$0 COP" : PRIZE_LADDER[currentQuestionIndex - 1].formatted + " COP";
+            document.getElementById('currentPrizeText').innerText = currentMoney;
+
+            // Reset Timer
+            clearInterval(timerInterval);
+            timeLeft = getTimerDurationForLevel(currentQuestionIndex + 1);
+            document.getElementById('timerText').innerText = timeLeft;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timerText').innerText = timeLeft;
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    playSound('tick');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        /* ==================== 5. USER ANSWER SELECTION & CHECK ==================== */
+        function selectOption(index) {
+            if (isAnsweringLocked) return;
+            isAnsweringLocked = true;
+            clearInterval(timerInterval);
+            playSound('click');
+
+            const selectedBtn = document.getElementById(`opt${index}`);
+            selectedBtn.classList.add('selected');
+
+            // Simulate suspense delay
+            setTimeout(() => {
+                const qData = QUESTIONS[currentQuestionIndex];
+                if (index === qData.answer) {
+                    // CORRECT ANSWER
+                    selectedBtn.classList.remove('selected');
+                    selectedBtn.classList.add('correct');
+                    playSound('correct');
+
+                    setTimeout(() => {
+                        currentQuestionIndex++;
+                        if (currentQuestionIndex >= QUESTIONS.length) {
+                            showVictory();
+                        } else {
+                            loadQuestion();
+                        }
+                    }, 1800);
+                } else {
+                    // WRONG ANSWER
+                    selectedBtn.classList.remove('selected');
+                    selectedBtn.classList.add('wrong');
+                    playSound('wrong');
+
+                    // Highlight correct option
+                    const correctBtn = document.getElementById(`opt${qData.answer}`);
+                    correctBtn.classList.add('correct');
+
+                    setTimeout(() => {
+                        showGameOver("Respuesta incorrecta.");
+                    }, 2000);
+                }
+            }, 1500);
+        }
+
+        function handleTimeOut() {
+            isAnsweringLocked = true;
+            playSound('wrong');
+            const qData = QUESTIONS[currentQuestionIndex];
+            const correctBtn = document.getElementById(`opt${qData.answer}`);
+            correctBtn.classList.add('correct');
+
+            setTimeout(() => {
+                showGameOver("¡Se agótó el tiempo límite!");
+            }, 2000);
+        }
+
+        function walkAway() {
+            if (isAnsweringLocked) return;
+            if (currentQuestionIndex === 0) {
+                alert("Aún no has acumulado ningún premio.");
+                return;
+            }
+            if (confirm("¿Estás seguro de retirarte ahora con el premio acumulado?")) {
+                clearInterval(timerInterval);
+                const wonMoney = PRIZE_LADDER[currentQuestionIndex - 1].formatted + " COP";
+                showGameOver(`Te has retirado voluntariamente con ${wonMoney}.`, true);
+            }
+        }
+
+        /* ==================== 6. LIFELINES (COMODINES) ==================== */
+        function use5050() {
+            if (isAnsweringLocked || usedLifelines['5050']) return;
+            usedLifelines['5050'] = true;
+            playSound('lifeline');
+
+            const btn = document.getElementById('lifeline5050');
+            btn.classList.add('opacity-30', 'cursor-not-allowed');
+
+            const correctIdx = QUESTIONS[currentQuestionIndex].answer;
+            let wrongIndices = [0, 1, 2, 3].filter(idx => idx !== correctIdx);
+            
+            // Randomly shuffle wrong options and pick 2 to eliminate
+            wrongIndices.sort(() => Math.random() - 0.5);
+            const toEliminate = wrongIndices.slice(0, 2);
+
+            toEliminate.forEach(idx => {
+                const optBtn = document.getElementById(`opt${idx}`);
+                optBtn.classList.add('eliminated');
+            });
+        }
+
+        function usePhoneFriend() {
+            if (isAnsweringLocked || usedLifelines['friend']) return;
+            usedLifelines['friend'] = true;
+            playSound('lifeline');
+
+            const btn = document.getElementById('lifelineFriend');
+            btn.classList.add('opacity-30', 'cursor-not-allowed');
+
+            const qData = QUESTIONS[currentQuestionIndex];
+            const letters = ['A', 'B', 'C', 'D'];
+            let friendAnswer = qData.answer;
+
+            // Accuracy decreases with difficulty
+            let accuracy = 0.85 - (currentQuestionIndex * 0.035); 
+            if (Math.random() > accuracy) {
+                let wrongOptions = [0, 1, 2, 3].filter(i => i !== qData.answer);
+                friendAnswer = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
+            }
+
+            const friendMsg = `"Hola, estoy un ${Math.floor(accuracy * 100)}% seguro de que la respuesta correcta a esta pregunta es la opción **${letters[friendAnswer]}**."`;
+            document.getElementById('friendDialogText').innerText = friendMsg;
+            document.getElementById('friendModal').classList.remove('hidden');
+        }
+
+        function closeFriendModal() {
+            playSound('click');
+            document.getElementById('friendModal').classList.add('hidden');
+        }
+
+        function useAudience() {
+            if (isAnsweringLocked || usedLifelines['audience']) return;
+            usedLifelines['audience'] = true;
+            playSound('lifeline');
+
+            const btn = document.getElementById('lifelineAudience');
+            btn.classList.add('opacity-30', 'cursor-not-allowed');
+
+            const qData = QUESTIONS[currentQuestionIndex];
+            let votes = [0, 0, 0, 0];
+            let correctPercentage = Math.max(30, 80 - (currentQuestionIndex * 3)); // Decreases as difficulty rises
+
+            votes[qData.answer] = correctPercentage;
+            let remaining = 100 - correctPercentage;
+
+            let wrongIndices = [0, 1, 2, 3].filter(i => i !== qData.answer);
+            wrongIndices.forEach((idx, i) => {
+                if (i === wrongIndices.length - 1) {
+                    votes[idx] = remaining;
+                } else {
+                    let share = Math.floor(Math.random() * remaining);
+                    votes[idx] = share;
+                    remaining -= share;
+                }
+            });
+
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`audVal${i}`).innerText = votes[i] + '%';
+                document.getElementById(`audBar${i}`).style.height = votes[i] + '%';
+            }
+
+            document.getElementById('audienceModal').classList.remove('hidden');
+        }
+
+        function closeAudienceModal() {
+            playSound('click');
+            document.getElementById('audienceModal').classList.add('hidden');
+        }
+
+        function toggleMobileLadder() {
+            playSound('click');
+            const drawer = document.getElementById('mobileLadderDrawer');
+            drawer.classList.toggle('translate-x-full');
+        }
+
+
+        /* ==================== 7. GAME OVER & VICTORY SCREENS ==================== */
+        function getGuaranteedPrize() {
+            if (currentQuestionIndex >= 10) return PRIZE_LADDER[9].formatted + " COP"; // $3.000.000
+            if (currentQuestionIndex >= 5) return PRIZE_LADDER[4].formatted + " COP";  // $100.000
+            return "$0 COP";
+        }
+
+        function showGameOver(reason, walkedAway = false) {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('gameOverScreen').classList.remove('hidden');
+
+            document.getElementById('gameOverReason').innerText = reason;
+            document.getElementById('lossQuestionNum').innerText = `${currentQuestionIndex + 1} / 20`;
+            
+            const letters = ['A', 'B', 'C', 'D'];
+            const correctOptIdx = QUESTIONS[currentQuestionIndex].answer;
+            const correctOptText = QUESTIONS[currentQuestionIndex].options[correctOptIdx];
+            document.getElementById('lossCorrectAnswer').innerText = `${letters[correctOptIdx]}: ${correctOptText}`;
+
+            if (walkedAway) {
+                const wonMoney = PRIZE_LADDER[currentQuestionIndex - 1].formatted + " COP";
+                document.getElementById('lossGuaranteedPrize').innerText = wonMoney;
+            } else {
+                document.getElementById('lossGuaranteedPrize').innerText = getGuaranteedPrize();
+            }
+        }
+
+        function showVictory() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('victoryScreen').classList.remove('hidden');
+            playSound('correct');
+            startConfetti();
+        }
+
+        function resetGame() {
+            playSound('click');
+            startGame();
+        }
+
+        /* ==================== 8. CONFETTI ANIMATION SYSTEM ==================== */
+        function startConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const particles = [];
+            const colors = ['#FFD700', '#FFA500', '#10B981', '#3B82F6', '#EC4899'];
+
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedY: Math.random() * 3 + 2,
+                    speedX: Math.random() * 2 - 1,
+                    rotation: Math.random() * 360
+                });
+            }
+
+            function animateConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += 2;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+
+                    if (p.y > canvas.height) {
+                        p.y = -10;
+                        p.x = Math.random() * canvas.width;
+                    }
+                });
+                requestAnimationFrame(animateConfetti);
+            }
+            animateConfetti();
+        }
+    </script>
+</body>
+</html>
